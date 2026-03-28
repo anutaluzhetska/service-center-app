@@ -1,0 +1,15 @@
+// файл, де ви прописуються зв'язки (наприклад, що Замовлення належить Клієнту).
+
+
+const User = require('./User');
+const Order = require('./Order');
+
+// Клієнт має багато замовлень
+User.hasMany(Order, { foreignKey: 'client_id', as: 'clientOrders' });
+Order.belongsTo(User, { foreignKey: 'client_id', as: 'client' });
+
+// Майстер може мати багато призначених замовлень
+User.hasMany(Order, { foreignKey: 'assigned_to', as: 'masterOrders' });
+Order.belongsTo(User, { foreignKey: 'assigned_to', as: 'technician' });
+
+module.exports = { User, Order };   

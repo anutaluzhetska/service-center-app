@@ -1,0 +1,1 @@
+// таблиця користувачів (id, email, password, role)

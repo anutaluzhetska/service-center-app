@@ -1,0 +1,5 @@
+//перевірка:
+
+//isAdmin
+//isMaster
+//isClient
