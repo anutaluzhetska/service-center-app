@@ -13,7 +13,7 @@ app.use('/master', require('./routes/master'));
 app.use('/admin', require('./routes/admin'));
 
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT 
 
 app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`)

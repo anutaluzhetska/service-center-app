@@ -1,52 +1,37 @@
-// таблиця замовлень (модель телефону, статус, коментар, зв'язок з юзером).
-import dotenv from 'dotenv';
-import pg from 'pg';
+import pool from '../config/db.js';
 
-dotenv.config()
-
-const { Pool } = pg;
-const pool = new Pool({
-   connectionString: `${process.env.DB_URL}`,
-   ssl: {
-      rejectUnauthorized: false
-   }
-});
-
-const initializeDatabase = async () => {
-
-   const createTableQuery = (`
-    CREATE TABLE IF NOT EXISTS ORDERS (
-        order_id SERIAL PRIMARY KEY,
-        client_id INTEGER REFERENCES users(id),
-        device_type TEXT NOT NULL,
-        device_model VARCHAR(100) NOT NULL,
-        os_version TEXT,
-        date_of_purchase DATE,
-        issue_description TEXT NOT NULL,
-        status TEXT NOT NULL check (status in (
-          'new', 
-          'in progress', 
-          'waiting customer response',
-          'waiting spare parts',
-          'failed',
-          'done'
-        )) default 'new',
-        technician_comment TEXT,
-        assigned_to INTEGER REFERENCES users(id),
-        cost DECIMAL(10, 2),
-        created_at TIMESTAMP NOT NULL default now(),
-        updated_at TIMESTAMP NOT NULL default now()
-      );
-      `)
-   try {
-      await pool.query(createTableQuery);
-   } catch (error) {
-      console.error('!! Error initializing database');
-      // console.error('Full error:', error);
-      throw error;
-   }
+export const OrderModel = {
+    // Для Майстра: бачити нові та свої
+    getNewOrders: async () => {
+        const res = await pool.query("SELECT * FROM ORDERS WHERE status = 'new'");
+        return res.rows;
+    },
+    getOrdersByMaster: async (masterId) => {
+        const res = await pool.query("SELECT * FROM ORDERS WHERE assigned_to = $1", [masterId]);
+        return res.rows;
+    },
+    // Оновлення статусу майстром
+    updateStatus: async (id, status, comment) => {
+        const res = await pool.query(
+            "UPDATE ORDERS SET status = $1, technician_comment = $2, updated_at = NOW() WHERE order_id = $3 RETURNING *",
+            [status, comment, id]
+        );
+        return res.rows[0];
+    },
+    // Для Адміна: всі замовлення та всі майстри
+    getAllOrders: async () => {
+        const res = await pool.query("SELECT * FROM ORDERS ORDER BY created_at DESC");
+        return res.rows;
+    },
+    getAllMasters: async () => {
+        const res = await pool.query("SELECT id, email FROM USERS WHERE role = 'master'");
+        return res.rows;
+    },
+    assignMaster: async (orderId, masterId) => {
+        const res = await pool.query(
+            "UPDATE ORDERS SET assigned_to = $1, status = 'in progress', updated_at = NOW() WHERE order_id = $2 RETURNING *",
+            [masterId, orderId]
+        );
+        return res.rows[0];
+    }
 };
-
-
-
-await initializeDatabase();
