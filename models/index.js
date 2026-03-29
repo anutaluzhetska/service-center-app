@@ -1,8 +1,7 @@
 // файл, де ви прописуються зв'язки (наприклад, що Замовлення належить Клієнту).
 
-
-const User = require('./User');
-const Order = require('./Order');
+import User from './User.js';
+import Order from './Order.js';
 
 // Клієнт має багато замовлень
 User.hasMany(Order, { foreignKey: 'client_id', as: 'clientOrders' });
