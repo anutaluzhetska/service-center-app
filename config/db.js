@@ -41,8 +41,11 @@ const initializeDatabase = async () => {
       );`;
 
    try {
+    await pool.query(createUsersTable);
+      await pool.query(createOrdersTable);
       const checkUsers = await pool.query("SELECT COUNT(*) FROM USERS");
       if (parseInt(checkUsers.rows[0].count) === 0) {
+        
       await pool.query(`
         INSERT INTO USERS (email, password, role) VALUES 
         ('client@test.com', '123', 'client'),
@@ -55,11 +58,10 @@ const initializeDatabase = async () => {
         
         INSERT INTO ORDERS (client_id, device_type, device_model, issue_description, status, assigned_to) VALUES 
         (1, 'Планшет', 'Samsung Tab', 'Заміна гнізда', 'in progress', 2);
-    `);
-    console.log('✅ Тестові дані успішно додані');
-}
-      // await pool.query(createUsersTable);
-      // await pool.query(createOrdersTable);
+        `);
+        console.log('✅ Тестові дані успішно додані');
+        }
+      
       console.log('✓ Initialized database with USERS and ORDERS tables');
    } catch (error) {
       console.error('✕ Error initializing database:', error);
