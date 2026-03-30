@@ -11,14 +11,14 @@ app.get('/', (req, res) => {
 app.use(express.json());
 
 import authRoutes from './routes/auth.js';
-import adminRoutes from './routes/admin.js';
 import masterRoutes from './routes/master.js';
+import adminRoutes from './routes/admin.js';
 import clientRoutes from './routes/client.js';
 
-app.use('/auth', authRoutes);
-app.use('/admin', adminRoutes);
-app.use('/master', masterRoutes);
-app.use('/client', clientRoutes);
+app.use('/api/auth', authRoutes);
+app.use('/api/master', masterRoutes);
+app.use('/api/admin', adminRoutes);
+app.use('/api/client', clientRoutes);
 
 
 const PORT = process.env.PORT 
