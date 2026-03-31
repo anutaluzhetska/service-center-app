@@ -8,7 +8,8 @@ router.get('/', (req, res) => {
   res.send('Admin Dashboard');
 });
 
-router.get('/all-info', isAdmin, admin.getAllData);
+// router.get('/all-info', isAdmin, admin.getAllData);
+router.get('/all-info', admin.getAllData); //тестовий маршрут для отримання всіх даних без авторизації
 router.post('/assign', isAdmin, admin.assignToMaster);
 
 export default router;

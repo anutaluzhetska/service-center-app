@@ -2,7 +2,9 @@ import { OrderModel } from '../models/Order.js';
 
 export const getDashboard = async (req, res) => {
     try {
-        const masterId = req.user.id;
+        // const masterId = req.user.id;
+        
+        const masterId = 2; //тестовий майстер
         const newOrders = await OrderModel.getNewOrders();
         const myOrders = await OrderModel.getOrdersByMaster(masterId);
         res.json({ newOrders, myOrders });
