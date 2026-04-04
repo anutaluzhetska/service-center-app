@@ -44,5 +44,23 @@ export const OrderModel = {
             [orderId]
         );
         return res.rows[0];
+    },
+    getOrderById: async (orderId) => {
+        const res = await pool.query(
+            `SELECT o.*, u.email as client_email 
+             FROM ORDERS o 
+             JOIN USERS u ON o.client_id = u.id 
+             WHERE o.order_id = $1`, 
+            [orderId]
+        );
+        return res.rows[0];
+    },
+
+    updateStatus: async (id, status, comment) => {
+        const res = await pool.query(
+            "UPDATE ORDERS SET status = $1, technician_comment = $2 WHERE order_id = $3 RETURNING *",
+            [status, comment, id]
+        );
+        return res.rows[0];
     }
 };

@@ -16,7 +16,7 @@ router.get('/edit/:id', getEditMasterView, (req, res) => { //тестovий ма
       title: 'Edit Order',}
   )
 });
-router.get('/order-details/:id', isMaster, master.getOrderDetails);
+// router.get('/order-details/:id', isMaster, master.getOrderDetails);
 router.get('/order-details/:id', master.getOrderDetails); //тестoвий маршрут для отримання деталей замовлення майстром без авторизації
 
 // router.get('/dashboard', isMaster, master.getDashboard); 

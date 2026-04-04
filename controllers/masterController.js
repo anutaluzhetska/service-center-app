@@ -28,7 +28,7 @@ export const updateOrder = async (req, res) => {
         const { id } = req.params;
         const { status, comment } = req.body;
         const updated = await OrderModel.updateStatus(id, status, comment);
-        res.json(order);
+        res.json(updated);
     } catch (error) {
         res.status(500).json({ error: 'Server error' });
     }
