@@ -1,0 +1,46 @@
+<h2>Master Dashboard</h2>
+
+<div class="card">
+    <div class="card-header bg-primary text-white">New Orders</div>
+    <div class="card-body">
+        <table class="table">
+            <thead><tr><th>Device</th><th>Issue</th><th>Action</th></tr></thead>
+            <tbody id="new-orders"></tbody>
+        </table>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header bg-success text-white">My Orders</div>
+    <div class="card-body">
+        <table class="table">
+            <thead><tr><th>Device</th><th>Status</th><th>Action</th></tr></thead>
+            <tbody id="my-orders"></tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    // Логіка завантаження даних
+    async function load() {
+        const res = await fetch('/api/master/dashboard');
+        const data = await res.json();
+        
+        document.getElementById('new-orders').innerHTML = data.newOrders.map(o => `
+            <tr>
+                <td>${o.device_model}</td>
+                <td>${o.issue_description}</td>
+                <td><a href="/api/master/edit/${o.order_id}" class="btn btn-sm btn-outline-primary">Edit</a></td>
+            </tr>
+        `).join('');
+
+        document.getElementById('my-orders').innerHTML = data.myOrders.map(o => `
+            <tr>
+                <td>${o.device_model}</td>
+                <td><span class="badge bg-info">${o.status}</span></td>
+                <td><a href="/api/master/edit/${o.order_id}" class="btn btn-sm btn-success">Update  </a></td>
+            </tr>
+        `).join('');
+    }
+    load();
+</script>

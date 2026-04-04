@@ -10,6 +10,7 @@ export const OrderModel = {
         const res = await pool.query("SELECT * FROM ORDERS WHERE assigned_to = $1", [masterId]);
         return res.rows;
     },
+
     // Оновлення статусу майстром
     updateStatus: async (id, status, comment) => {
         const res = await pool.query(
@@ -31,6 +32,16 @@ export const OrderModel = {
         const res = await pool.query(
             "UPDATE ORDERS SET assigned_to = $1, status = 'in progress', updated_at = NOW() WHERE order_id = $2 RETURNING *",
             [masterId, orderId]
+        );
+        return res.rows[0];
+    },
+    getOrderDetails: async (orderId) => {
+        const res = await pool.query(
+            `SELECT o.*, user.email as client_email 
+             FROM ORDERS o 
+             JOIN USERS user ON o.client_id = user.id 
+             WHERE o.order_id = $1`, 
+            [orderId]
         );
         return res.rows[0];
     }

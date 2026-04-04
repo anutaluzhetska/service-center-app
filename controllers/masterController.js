@@ -12,6 +12,16 @@ export const getDashboard = async (req, res) => {
         res.status(500).json({ error: 'Server error' });
     }
 };
+export const getOrderDetails = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const order = await OrderModel.getOrderDetails(id);
+        if (!order) return res.status(404).json({ error: 'Order not found' });
+        res.json(order);
+    } catch (error) {
+        res.status(500).json({ error: 'Server error' });
+    }
+};
 
 export const updateOrder = async (req, res) => {
     try {

@@ -51,7 +51,7 @@
 
 | Метод | Шлях | Опис |
 | :--- | :--- | :--- |
-| **GET** | `/dashboard-data` | Повертає `newOrders` (статус `new`) та `myOrders` (закріплені за майстром). |
+| **GET** | `/dashboard` | Повертає `newOrders` (статус `new`) та `myOrders` (закріплені за майстром). |
 | **PUT** | `/order/:id` | Оновлення замовлення: зміна `status` та додавання `technician_comment`. |
 
 ---

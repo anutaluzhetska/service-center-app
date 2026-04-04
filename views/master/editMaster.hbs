@@ -1,0 +1,118 @@
+<div class="container">
+    <div class="card">
+        <h1>Edit Order №<span id="order-id-display">{{orderId}}</span></h1>
+        <hr>
+        <div id="order-info">
+            <p><strong>ID:</strong> {{orderId}}</p>
+            <p><strong>Client (Email):</strong> <span id="client-email">{{clientEmail}}</span></p>
+            <p><strong>Device Type:</strong> <span id="device-type">{{device_type}}</span></p>
+            <p><strong>Model:</strong> <span id="device-model">{{deviceModel}}</span></p>
+            <p><strong>OS Version:</strong> <span id="os-version">{{osVersion}}</span></p>
+            <p><strong>Purchase Date:</strong> <span id="purchase-date">{{purchaseDate}}</span></p>
+            <p><strong>Repair Cost:</strong> <span id="order-cost">{{orderCost}}</span></p>
+            <p><strong>Created At:</strong> <span id="created-at">{{createdAt}}</span></p>
+        </div>
+    </div>
+
+        <form id="edit-order-form" class="card mt-4">
+        <div class="form-group">
+            <label for="status"><strong>Change Status:</strong></label>
+            <select id="status" name="status" class="form-control" required>
+                <option value="new">New</option>
+                <option value="in progress">In Progress</option>
+                <option value="waiting customer response">Waiting for Customer Response</option>
+                <option value="waiting spare parts">Waiting for Spare Parts</option>
+                <option value="failed">Failed</option>
+                <option value="done">Done</option>
+            </select>
+        </div>
+
+        <div class="form-group mt-3">
+            <label for="comment"><strong>Technician Comment:</strong></label>
+            <textarea id="comment" name="comment" class="form-control" rows="5" placeholder="Write what was done or the reason for the delay..."></textarea>
+        </div>
+
+        <div class="mt-4">
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+            <a href="/api/master" class="btn btn-secondary">Back to List</a>
+        </div>
+    </form>
+</div>
+
+<script>
+    const orderId = "{{orderId}}";
+    // Завантаження поточних даних замовлення для заповнення форми
+    async function loadOrderDetails() {
+        const response = await fetch(`/api/master/order-details/${orderId}`);
+        try {
+            const response = await fetch('/api/master/dashboard');
+            const data = await response.json();
+            
+            // Шукаємо потрібне замовлення серед нових або призначених
+            {{!-- const order = data.myOrders.find(o => o.order_id == orderId) || 
+                          data.newOrders.find(o => o.order_id == orderId);  
+                         --}}
+
+            if (order) {
+            document.getElementById('client-email').innerText = orders.client_email;
+            document.getElementById('device-type').innerText = orders.device_type;
+            document.getElementById('device-model').innerText = orders.device_model;
+            document.getElementById('os-version').innerText = orders.os_version || 'Not specified';
+            document.getElementById('purchase-date').innerText = orders.date_of_purchase ? new Date(orders.date_of_purchase).toLocaleDateString() : 'Not specified';
+            document.getElementById('order-cost').innerText = orders.cost ? `${orders.cost} UAH` : 'Not specified';
+            document.getElementById('created-at').innerText = new Date(orders.created_at).toLocaleString();
+            
+            // Заповнення полів форми для редагування
+            document.getElementById('status').value = order.status;
+            document.getElementById('comment').value = order.technician_comment || '';
+        } else {
+            alert('Order not found');
+            window.location.href = '/api/master';
+        } try {
+            const order = await response.json();
+            document.getElementById('client-email').innerText = order.client_email;
+            document.getElementById('device-type').innerText = order.device_type;
+            document.getElementById('device-model').innerText = order.device_model;
+            document.getElementById('os-version').innerText = order.os_version || 'Not specified';
+            document.getElementById('purchase-date').innerText = order.date_of_purchase ? new Date(order.date_of_purchase).toLocaleDateString() : 'Not specified';
+            document.getElementById('order-cost').innerText = order.cost ? `${order.cost} UAH` : 'Not specified';
+            document.getElementById('created-at').innerText = new Date(order.created_at).toLocaleString(); 
+        } catch (err) {
+            console.error('Error loading order details:', err);
+            alert('Failed to load order details.');
+        }
+    
+
+    // Обробка відправки форми (Оновлення даних)
+    document.getElementById('edit-order-form').addEventListener('submit', async (e) => {
+        export.preventDefault();
+        
+        const updateData = {
+            status: document.getElementById('status').value,
+            comment: document.getElementById('comment').value
+        };
+
+        try {
+            const response = await fetch(`/api/master/order/${orderId}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(updateData)
+            });
+
+            if (response.ok) {
+                alert('Data updated successfully!');
+                window.location.href = '/master/dashboard'; // Повертаємося до оновленого списку замовлень
+            } else {
+                const error = await response.json();
+                alert('Error: ' + error.message);
+            }
+        } catch (err) {
+            console.error('Error saving changes:', err);
+            alert('Failed to save changes.');
+        }
+    });
+    }
+    }
+    loadOrderDetails();
+</script>
+
